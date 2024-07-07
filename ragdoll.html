@@ -81,6 +81,28 @@ function createRagdoll() {
 
 let ragdoll = createRagdoll();
 
+// Add all bodies and constraints to the world
+Composite.add(world, [
+    ground, ceiling, leftWall, rightWall,
+    ...ragdoll.parts,
+    ...ragdoll.constraints
+]);
+
+
+// Add mouse control
+const mouse = Mouse.create(render.canvas),
+      mouseConstraint = MouseConstraint.create(engine, {
+          mouse: mouse,
+          constraint: {
+              stiffness: 0.2,
+              render: {
+                  visible: false
+              }
+          }
+      });
+
+Composite.add(world, mouseConstraint);
+
 // Create renderer
 const render = Render.create({
     canvas: document.getElementById('canvas'),
