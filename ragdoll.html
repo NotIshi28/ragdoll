@@ -46,25 +46,32 @@
 // Initialize Matter.js
 const Engine = Matter.Engine,
       Render = Matter.Render,
-      Runner = Matter.Runner
+      Runner = Matter.Runner,
+      Bodies = Matter.Bodies
 
 // Create engine
 const engine = Engine.create(),
       world = engine.world;
 
+const borderThickness = 50;
+const ground = Bodies.rectangle(400, 600 + borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
+const ceiling = Bodies.rectangle(400, -borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
+const leftWall = Bodies.rectangle(-borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
+const rightWall = Bodies.rectangle(800 + borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
+
 // Create renderer
-const render = Render.create({
-    canvas: document.getElementById('canvas'),
-    engine: engine,
-    options: {
-        width: 800,
-        height: 600,
-        wireframes: true
-    }
-});
+// const render = Render.create({
+//     canvas: document.getElementById('canvas'),
+//     engine: engine,
+//     options: {
+//         width: 800,
+//         height: 600,
+//         wireframes: true
+//     }
+// });
 
 // Run the engine
-Render.run(render);
-Runner.run(Runner.create(), engine);
-</script>
+// Render.run(render);
+// Runner.run(Runner.create(), engine);
+// </script>
 </body></html>
