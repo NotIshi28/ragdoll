@@ -38,6 +38,7 @@
 <body>
 <canvas id="canvas" width="800" height="600"></canvas>
 <div id="controls">
+  <button id="resetBtn">Reset Scene</button>
 </div>
 <div id="info">Click and drag to throw the ragdoll!</div>
 
@@ -102,6 +103,17 @@ const mouse = Mouse.create(render.canvas),
       });
 
 Composite.add(world, mouseConstraint);
+
+// Keep the mouse in sync with rendering
+render.mouse = mouse;
+
+// Reset scene function
+function resetScene() {
+    Composite.remove(world, [...ragdoll.parts, ...ragdoll.constraints]);
+    ragdoll = createRagdoll();
+    Composite.add(world, [...ragdoll.parts, ...ragdoll.constraints]);
+}
+
 
 // Create renderer
 const render = Render.create({
