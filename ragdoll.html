@@ -60,22 +60,22 @@ const leftWall = Bodies.rectangle(-borderThickness/2, 300, borderThickness, 600 
 const rightWall = Bodies.rectangle(800 + borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
 
 function createRagdoll() {
-    const head = Bodies.circle(420, 120, 35, { friction: 0.4, restitution: 0.7, render: { fillStyle: '#FFD700' } });
-    const torso = Bodies.rectangle(380, 200, 65, 95, { friction: 0.6, restitution: 0.5, render: { fillStyle: '#4169E1' } });
-    const leftArm = Bodies.rectangle(330, 180, 25, 85, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FF6347' } });
-    const rightArm = Bodies.rectangle(470, 190, 15, 75, { friction: 0.4, restitution: 0.7, render: { fillStyle: '#FF6347' } });
-    const leftLeg = Bodies.rectangle(355, 310, 25, 75, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#32CD32' } });
-    const rightLeg = Bodies.rectangle(435, 320, 20, 80, { friction: 0.6, restitution: 0.5, render: { fillStyle: '#32CD32' } });
+    const head = Bodies.circle(410, 110, 32, { friction: 0.3, restitution: 0.5, render: { fillStyle: '#FFD700' } });
+    const torso = Bodies.rectangle(390, 190, 58, 105, { friction: 0.4, restitution: 0.7, render: { fillStyle: '#4169E1' } });
+    const leftArm = Bodies.rectangle(360, 170, 22, 78, { friction: 0.2, restitution: 0.6, render: { fillStyle: '#FF6347' } });
+    const rightArm = Bodies.rectangle(440, 170, 18, 82, { friction: 0.5, restitution: 0.3, render: { fillStyle: '#FF6347' } });
+    const leftLeg = Bodies.rectangle(365, 290, 23, 77, { friction: 0.6, restitution: 0.4, render: { fillStyle: '#32CD32' } });
+    const rightLeg = Bodies.rectangle(415, 295, 21, 79, { friction: 0.4, restitution: 0.5, render: { fillStyle: '#32CD32' } });
 
-    const neck = Constraint.create({ bodyA: head, bodyB: torso, pointA: { x: 0, y: 35 }, pointB: { x: 0, y: -45 }, stiffness: 0.6 });
-    const leftShoulder = Constraint.create({ bodyA: torso, bodyB: leftArm, pointA: { x: -35, y: -40 }, pointB: { x: 0, y: -40 }, stiffness: 0.5 });
-    const rightShoulder = Constraint.create({ bodyA: torso, bodyB: rightArm, pointA: { x: 35, y: -45 }, pointB: { x: 0, y: -35 }, stiffness: 0.4 });
-    const leftHip = Constraint.create({ bodyA: torso, bodyB: leftLeg, pointA: { x: -20, y: 55 }, pointB: { x: 0, y: -35 }, stiffness: 0.6 });
-    const rightHip = Constraint.create({ bodyA: torso, bodyB: rightLeg, pointA: { x: 20, y: 55 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
+    // const neck = Constraint.create({ bodyA: head, bodyB: torso, pointA: { x: 0, y: 28 }, pointB: { x: 0, y: -50 }, stiffness: 0.4 });
+    // const leftShoulder = Constraint.create({ bodyA: torso, bodyB: leftArm, pointA: { x: -29, y: -40 }, pointB: { x: 0, y: -38 }, stiffness: 0.5 });
+    // const rightShoulder = Constraint.create({ bodyA: torso, bodyB: rightArm, pointA: { x: 29, y: -40 }, pointB: { x: 0, y: -38 }, stiffness: 0.6 });
+    // const leftHip = Constraint.create({ bodyA: torso, bodyB: leftLeg, pointA: { x: -19, y: 52 }, pointB: { x: 0, y: -35 }, stiffness: 0.4 });
+    // const rightHip = Constraint.create({ bodyA: torso, bodyB: rightLeg, pointA: { x: 19, y: 52 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
 
     return {
         parts: [head, torso, leftArm, rightArm, leftLeg, rightLeg],
-        constraints: [neck, leftShoulder, rightShoulder, leftHip, rightHip]
+        // constraints: [neck, leftShoulder, rightShoulder, leftHip, rightHip]
     };
 }
 
