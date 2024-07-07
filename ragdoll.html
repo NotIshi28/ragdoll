@@ -1,133 +1,156 @@
 <html><head>
-<title>RagdollPhysics.js - Throw, Explode, and Reset!</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-  }
-  #canvas {
-    border: 1px solid #000;
-    background-color: #fff;
-  }
-  #controls {
-    margin-top: 10px;
-  }
-  button {
-    font-size: 16px;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-  }
-  #info {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 10px;
-    border-radius: 5px;
-  }
-</style>
-</head>
-<body>
-<canvas id="canvas" width="800" height="600"></canvas>
-<div id="controls">
-  <button id="resetBtn">Reset Scene</button>
-</div>
-<div id="info">Click and drag to throw the ragdoll!</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
-<script>
-// Initialize Matter.js
-const Engine = Matter.Engine,
-      Render = Matter.Render,
-      Runner = Matter.Runner,
-      Bodies = Matter.Bodies
-
-// Create engine
-const engine = Engine.create(),
-      world = engine.world;
-
-const borderThickness = 50;
-const ground = Bodies.rectangle(400, 600 + borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
-const ceiling = Bodies.rectangle(400, -borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
-const leftWall = Bodies.rectangle(-borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
-const rightWall = Bodies.rectangle(800 + borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
-
-function createRagdoll() {
-    const head = Bodies.circle(400, 100, 30, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FFD700' } });
-    const torso = Bodies.rectangle(400, 180, 60, 100, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#4169E1' } });
-    const leftArm = Bodies.rectangle(350, 180, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FF6347' } });
-    const rightArm = Bodies.rectangle(450, 180, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FF6347' } });
-    const leftLeg = Bodies.rectangle(375, 300, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#32CD32' } });
-    const rightLeg = Bodies.rectangle(425, 300, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#32CD32' } });
-
-    const neck = Constraint.create({ bodyA: head, bodyB: torso, pointA: { x: 0, y: 30 }, pointB: { x: 0, y: -50 }, stiffness: 0.5 });
-    const leftShoulder = Constraint.create({ bodyA: torso, bodyB: leftArm, pointA: { x: -30, y: -40 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
-    const rightShoulder = Constraint.create({ bodyA: torso, bodyB: rightArm, pointA: { x: 30, y: -40 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
-    const leftHip = Constraint.create({ bodyA: torso, bodyB: leftLeg, pointA: { x: -20, y: 50 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
-    const rightHip = Constraint.create({ bodyA: torso, bodyB: rightLeg, pointA: { x: 20, y: 50 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
-
-    return {
-        parts: [head, torso, leftArm, rightArm, leftLeg, rightLeg],
-        constraints: [neck, leftShoulder, rightShoulder, leftHip, rightHip]
-    };
-}
-
-let ragdoll = createRagdoll();
-
-// Add all bodies and constraints to the world
-Composite.add(world, [
-    ground, ceiling, leftWall, rightWall,
-    ...ragdoll.parts,
-    ...ragdoll.constraints
-]);
-
-
-// Add mouse control
-const mouse = Mouse.create(render.canvas),
-      mouseConstraint = MouseConstraint.create(engine, {
-          mouse: mouse,
-          constraint: {
-              stiffness: 0.2,
-              render: {
-                  visible: false
-              }
-          }
-      });
-
-Composite.add(world, mouseConstraint);
-
-// Keep the mouse in sync with rendering
-render.mouse = mouse;
-
-// Reset scene function
-function resetScene() {
-    Composite.remove(world, [...ragdoll.parts, ...ragdoll.constraints]);
-    ragdoll = createRagdoll();
-    Composite.add(world, [...ragdoll.parts, ...ragdoll.constraints]);
-}
-
-
-// Create renderer
-const render = Render.create({
-    canvas: document.getElementById('canvas'),
-    engine: engine,
-    options: {
-        width: 800,
-        height: 600,
-        wireframes: true
+  <title>RagdollPhysics.js - Throw, Explode, and Reset!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
     }
-});
-
-// Run the engine
-Render.run(render);
-Runner.run(Runner.create(), engine);
-</script>
-</body></html>
+    #canvas {
+      border: 1px solid #000;
+      background-color: #fff;
+    }
+    #controls {
+      margin-top: 10px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+    #info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+  </head>
+  <body>
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <div id="controls">
+    <button id="resetBtn">Reset Scene</button>
+    <button id="explodeBtn">Explode Ragdoll</button>
+  </div>
+  <div id="info">Click and drag to throw the ragdoll!</div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+  <script>
+  // Initialize Matter.js
+  const Engine = Matter.Engine,
+        Render = Matter.Render,
+        Runner = Matter.Runner,
+        Bodies = Matter.Bodies,
+        Composite = Matter.Composite,
+        Constraint = Matter.Constraint,
+        Mouse = Matter.Mouse,
+        MouseConstraint = Matter.MouseConstraint,
+        Vector = Matter.Vector;
+  
+  // Create engine
+  const engine = Engine.create(),
+        world = engine.world;
+  
+  // Create renderer
+  const render = Render.create({
+      canvas: document.getElementById('canvas'),
+      engine: engine,
+      options: {
+          width: 800,
+          height: 600,
+          wireframes: false
+      }
+  });
+  
+  // Create borders
+  const borderThickness = 50;
+  const ground = Bodies.rectangle(400, 600 + borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
+  const ceiling = Bodies.rectangle(400, -borderThickness/2, 800 + 2*borderThickness, borderThickness, { isStatic: true });
+  const leftWall = Bodies.rectangle(-borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
+  const rightWall = Bodies.rectangle(800 + borderThickness/2, 300, borderThickness, 600 + 2*borderThickness, { isStatic: true });
+  
+  // Ragdoll creation function
+  function createRagdoll() {
+      const head = Bodies.circle(400, 100, 30, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FFD700' } });
+      const torso = Bodies.rectangle(400, 180, 60, 100, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#4169E1' } });
+      const leftArm = Bodies.rectangle(350, 180, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FF6347' } });
+      const rightArm = Bodies.rectangle(450, 180, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#FF6347' } });
+      const leftLeg = Bodies.rectangle(375, 300, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#32CD32' } });
+      const rightLeg = Bodies.rectangle(425, 300, 20, 80, { friction: 0.5, restitution: 0.6, render: { fillStyle: '#32CD32' } });
+  
+      const neck = Constraint.create({ bodyA: head, bodyB: torso, pointA: { x: 0, y: 30 }, pointB: { x: 0, y: -50 }, stiffness: 0.5 });
+      const leftShoulder = Constraint.create({ bodyA: torso, bodyB: leftArm, pointA: { x: -30, y: -40 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
+      const rightShoulder = Constraint.create({ bodyA: torso, bodyB: rightArm, pointA: { x: 30, y: -40 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
+      const leftHip = Constraint.create({ bodyA: torso, bodyB: leftLeg, pointA: { x: -20, y: 50 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
+      const rightHip = Constraint.create({ bodyA: torso, bodyB: rightLeg, pointA: { x: 20, y: 50 }, pointB: { x: 0, y: -35 }, stiffness: 0.5 });
+  
+      return {
+          parts: [head, torso, leftArm, rightArm, leftLeg, rightLeg],
+          constraints: [neck, leftShoulder, rightShoulder, leftHip, rightHip]
+      };
+  }
+  
+  let ragdoll = createRagdoll();
+  
+  // Add all bodies and constraints to the world
+  Composite.add(world, [
+      ground, ceiling, leftWall, rightWall,
+      ...ragdoll.parts,
+      ...ragdoll.constraints
+  ]);
+  
+  // Add mouse control
+  const mouse = Mouse.create(render.canvas),
+        mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: {
+                    visible: false
+                }
+            }
+        });
+  
+  Composite.add(world, mouseConstraint);
+  
+  // Keep the mouse in sync with rendering
+  render.mouse = mouse;
+  
+  // Reset scene function
+  function resetScene() {
+      Composite.remove(world, [...ragdoll.parts, ...ragdoll.constraints]);
+      ragdoll = createRagdoll();
+      Composite.add(world, [...ragdoll.parts, ...ragdoll.constraints]);
+  }
+  
+  // Explode ragdoll function
+  function explodeRagdoll() {
+      Composite.remove(world, ragdoll.constraints);
+      ragdoll.parts.forEach(part => {
+          const force = Vector.mult(
+              Vector.normalise(Vector.sub(part.position, ragdoll.parts[1].position)),
+              0.05 * part.mass
+          );
+          Matter.Body.applyForce(part, part.position, force);
+      });
+      ragdoll.constraints = [];
+  }
+  
+  // Event listeners for buttons
+  document.getElementById('resetBtn').addEventListener('click', resetScene);
+  document.getElementById('explodeBtn').addEventListener('click', explodeRagdoll);
+  
+  // Run the engine
+  Render.run(render);
+  Runner.run(Runner.create(), engine);
+  </script>
+  </body></html>
